@@ -89,7 +89,7 @@ By combining large-scale pitch-level data with statistical modeling, this domain
 
 ### Background Reading
 
-[Background readings folder](INSERT ONEDRIVE FOLDER LINK)
+[Background readings folder](https://myuva-my.sharepoint.com/:f:/g/personal/vzu3vu_virginia_edu/IgAgeeFylog8T62lp4NTkhNDAVaDEMGznPdSu2cUngmeDrQ?e=IhukYt)
 
 ### Background Reading Table
 
