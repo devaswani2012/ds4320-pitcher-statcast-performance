@@ -34,7 +34,7 @@ vzu3vu
 
 ## License
 
-[MIT License](LICENSE)
+[MIT License](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/85c8d3d572dc5cebf8b2b804db764a745765ad20/LICENSE)
 
 ---
 
