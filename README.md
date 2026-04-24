@@ -28,7 +28,7 @@ vzu3vu
 
 ## Pipeline
 
-[Data Preparation Notebook](pipeline/project2_data_prep.ipynb)  
+[Data Preparation Notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/529f8f582e0adf04de670a3eb5b7d6b4b4464a00/data/project2_data_prep.ipynb)  
 [Analysis Pipeline Notebook](pipeline/project2_pipeline.ipynb)  
 [Analysis Pipeline Markdown](pipeline/project2_pipeline.md)
 
