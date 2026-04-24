@@ -28,7 +28,7 @@ vzu3vu
 
 ## Pipeline
 
-[Data Preparation Notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/cf1664fdecb9891747b4e57d60e9cbc306d9255b/data/project2_data_prep.ipynb)  
+[Data Preparation Notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/879d42d0afbc4bb2a5473637adee84bca0b86917/data/project2_data_prep.ipynb)  
 [Analysis Pipeline Notebook](pipeline/project2_pipeline.ipynb)  
 [Analysis Pipeline Markdown](pipeline/project2_pipeline.md)
 
@@ -139,7 +139,7 @@ The main steps are:
 
 | File | Description | Link |
 |---|---|---|
-| `project2_data_prep.ipynb` | Loads raw Statcast data, keeps relevant pitcher variables, cleans missing values, standardizes column names, converts rows to MongoDB-ready documents, and inserts records into MongoDB | [notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/cf1664fdecb9891747b4e57d60e9cbc306d9255b/data/project2_data_prep.ipynb) |
+| `project2_data_prep.ipynb` | Loads raw Statcast data, keeps relevant pitcher variables, cleans missing values, standardizes column names, converts rows to MongoDB-ready documents, and inserts records into MongoDB | [notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/879d42d0afbc4bb2a5473637adee84bca0b86917/data/project2_data_prep.ipynb) |
 | `project2_pipeline.ipynb` | Queries MongoDB, converts documents into a dataframe, creates modeling features, trains a predictive model, evaluates results, and creates visualizations | [notebook](pipeline/project2_pipeline.ipynb) |
 | `project2_pipeline.md` | Markdown export of the analysis pipeline notebook | [markdown](pipeline/project2_pipeline.md) |
 
