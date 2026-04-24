@@ -20,11 +20,11 @@ vzu3vu
 
 ## Press Release
 
-[Press Release](docs/press_release.md)
+[Press Release](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/84ec35330b6c09a9f7b75b347b165d09c304475a/press_release.md)
 
 ## Data
 
-[Background Reading and Data Folder](INSERT ONEDRIVE LINK)
+[Background Reading and Data Folder](https://myuva-my.sharepoint.com/:f:/g/personal/vzu3vu_virginia_edu/IgAgeeFylog8T62lp4NTkhNDAVaDEMGznPdSu2cUngmeDrQ?e=M5qECC)
 
 ## Pipeline
 
@@ -95,11 +95,11 @@ By combining large-scale pitch-level data with statistical modeling, this domain
 
 | Title | Description | Link |
 |---|---|---|
-| MLB Statcast Glossary | Overview of Statcast system and metrics | [link](INSERT LINK) |
-| Expected ERA/xERA | Explains expected ERA and why it matters | [link](INSERT LINK) |
-| Velocity | Defines pitch velocity and how it is measured | [link](INSERT LINK) |
-| Spin Rate | Explains spin rate and its impact on pitch movement | [link](INSERT LINK) |
-| Pitch Modeling Primer | Explains how pitch data can be used in modeling | [link](INSERT LINK) |
+| MLB Statcast Glossary | Overview of Statcast system and metrics | [link](https://myuva-my.sharepoint.com/:u:/g/personal/vzu3vu_virginia_edu/IQAO7UCZIQo6SL5j26yVLIjPATQdThfdIIjx9S3Yy75EGdI?e=tlPlw5) |
+| Expected ERA/xERA | Explains expected ERA and why it matters | [link](https://myuva-my.sharepoint.com/:u:/g/personal/vzu3vu_virginia_edu/IQD5xxOJIRiyR6RwzZjCTH7kAf8uLoJyru5xa8rTWl1j_Eo?e=mLVm9n) |
+| Velocity | Defines pitch velocity and how it is measured | [link](https://myuva-my.sharepoint.com/:u:/g/personal/vzu3vu_virginia_edu/IQDxCW-rHSdzTbYIwV9Kc8ykAcg4C_Dk7Bk4XzMR5cCfBrE?e=y84mT1) |
+| Spin Rate | Explains spin rate and its impact on pitch movement | [link](https://myuva-my.sharepoint.com/:u:/g/personal/vzu3vu_virginia_edu/IQAn6ao71Z-sRZ4ObFA4-8sBAZ8x80MiIcltz5gM80a-C84?e=AjImWy) |
+| Pitch Modeling Primer | Explains how pitch data can be used in modeling | [link](https://myuva-my.sharepoint.com/:u:/g/personal/vzu3vu_virginia_edu/IQD5wOtRxXqAS43VNquZXX5dAdyFVvHXXFPuM9Rg6tfrsEY?e=7lWfhU) |
 
 ---
 
@@ -139,7 +139,7 @@ The main steps are:
 
 | File | Description | Link |
 |---|---|---|
-| `project2_data_prep.ipynb` | Loads raw Statcast data, keeps relevant pitcher variables, cleans missing values, standardizes column names, converts rows to MongoDB-ready documents, and inserts records into MongoDB | [notebook](pipeline/project2_data_prep.ipynb) |
+| `project2_data_prep.ipynb` | Loads raw Statcast data, keeps relevant pitcher variables, cleans missing values, standardizes column names, converts rows to MongoDB-ready documents, and inserts records into MongoDB | [notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/529f8f582e0adf04de670a3eb5b7d6b4b4464a00/data/project2_data_prep.ipynb) |
 | `project2_pipeline.ipynb` | Queries MongoDB, converts documents into a dataframe, creates modeling features, trains a predictive model, evaluates results, and creates visualizations | [notebook](pipeline/project2_pipeline.ipynb) |
 | `project2_pipeline.md` | Markdown export of the analysis pipeline notebook | [markdown](pipeline/project2_pipeline.md) |
 
