@@ -214,15 +214,12 @@ Numerical variables are stored as integers or floats, categorical variables are 
 Pitch-level outcomes contain meaningful randomness. A well-executed pitch can still result in a hit, while a poorly located pitch may become an out because of hitter error or defensive positioning. Using many pitch-level documents helps reduce random variation, but uncertainty remains important when interpreting the model results.
 
 ---
+## Statistical Interpretation
 
-## Data
+The summary statistics indicate that most pitcher-seasons cluster within a relatively narrow range of xERA, fastball velocity, fastball spin, and expected contact quality. However, there is still meaningful variation across pitchers, which suggests that Statcast-based features can help explain differences in pitching performance.
 
-The MongoDB database is stored in MongoDB Atlas. Login credentials are not included in this GitHub repository. They will be submitted separately in Canvas as required by the project instructions.
+The model results show that adding expected contact quality, especially average estimated wOBA, substantially improves predictive performance. Fastball velocity and fastball spin alone provide limited explanatory power, but when combined with expected outcome metrics, the model captures a much larger portion of variation in xERA.
 
----
+The Random Forest model performs better than the baseline linear regression model, suggesting that the relationship between pitch-quality metrics and xERA is not purely linear. However, the results should be interpreted carefully because average estimated wOBA is conceptually related to xERA, meaning some predictive strength may come from overlapping information in the target and predictor variables.
 
-## Problem Solution Pipeline
-
-The pipeline is implemented in a Jupyter notebook and exported as a markdown file. The notebook queries MongoDB, loads the documents into a dataframe, performs feature cleaning and aggregation, trains a machine learning model, evaluates the model, and creates a visualization comparing predicted and actual pitcher performance.
-
-The final pipeline demonstrates that Statcast pitch-quality features can be used to create a document-based predictive workflow for pitcher xERA.
+Overall, the analysis suggests that pitcher performance is not random. Statcast pitch-quality metrics contain meaningful predictive signal, but xERA is still influenced by additional factors such as pitch mix, command, opponent quality, sequencing, and game context.
