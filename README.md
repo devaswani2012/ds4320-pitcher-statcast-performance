@@ -20,7 +20,7 @@ vzu3vu
 
 ## Press Release
 
-[Press Release](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/84ec35330b6c09a9f7b75b347b165d09c304475a/press_release.md)
+[Press Release](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/57fd2fe05e86e7a3328950d31f64d51e8d6a082a/press_release.md)
 
 ## Data
 
@@ -62,7 +62,7 @@ MLB’s expected metrics are especially useful because they aim to credit the pi
 
 ### Headline of Press Release
 
-[Statcast Data Reveals What Truly Drives Pitching Performance](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/84ec35330b6c09a9f7b75b347b165d09c304475a/press_release.md)
+[Statcast Data Reveals What Truly Drives Pitching Performance](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/57fd2fe05e86e7a3328950d31f64d51e8d6a082a/press_release.md)
 
 ---
 
