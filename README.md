@@ -30,7 +30,7 @@ vzu3vu
 
 [Data Preparation Notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/879d42d0afbc4bb2a5473637adee84bca0b86917/data/project2_data_prep.ipynb)  
 [Analysis Pipeline Notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/0aecd90ef4f2b777f54aac2badf91fef9a975f03/pipeline/project2_pipeline.ipynb)  
-[Analysis Pipeline Markdown](pipeline/project2_pipeline.md)
+[Analysis Pipeline Markdown](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/7024d1749249f52e1a6b222f1bd77451ece2aa59/pipeline/project2_pipeline.md)
 
 ## License
 
@@ -141,7 +141,7 @@ The main steps are:
 |---|---|---|
 | `project2_data_prep.ipynb` | Loads raw Statcast data, keeps relevant pitcher variables, cleans missing values, standardizes column names, converts rows to MongoDB-ready documents, and inserts records into MongoDB | [notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/879d42d0afbc4bb2a5473637adee84bca0b86917/data/project2_data_prep.ipynb) |
 | `project2_pipeline.ipynb` | Queries MongoDB, converts documents into a dataframe, creates modeling features, trains a predictive model, evaluates results, and creates visualizations | [notebook](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/0aecd90ef4f2b777f54aac2badf91fef9a975f03/pipeline/project2_pipeline.ipynb) |
-| `project2_pipeline.md` | Markdown export of the analysis pipeline notebook | [markdown](pipeline/project2_pipeline.md) |
+| `project2_pipeline.md` | Markdown export of the analysis pipeline notebook | [markdown](https://github.com/devaswani2012/ds4320-pitcher-statcast-performance/blob/7024d1749249f52e1a6b222f1bd77451ece2aa59/pipeline/project2_pipeline.md) |
 
 ### Rationale for Critical Decisions
 
