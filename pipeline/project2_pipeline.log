@@ -1,0 +1,14 @@
+2026-04-27 16:27:35,679 - INFO - Pipeline started successfully.
+2026-04-27 16:27:42,274 - INFO - Connected to MongoDB. Documents in collection: 2967
+2026-04-27 16:27:45,659 - INFO - Loaded dataframe with shape (2967, 9)
+2026-04-27 16:27:49,983 - INFO - Rows before cleaning: 2967
+2026-04-27 16:27:49,983 - INFO - Rows after cleaning: 2967
+2026-04-27 16:27:58,954 - INFO - Linear regression model trained.
+2026-04-27 16:27:58,955 - INFO - Linear MAE: 1.4225626544380672
+2026-04-27 16:27:58,955 - INFO - Linear RMSE: 2.032753936831392
+2026-04-27 16:27:58,955 - INFO - Linear R2: 0.6816316655011266
+2026-04-27 16:28:05,276 - INFO - Random forest model trained.
+2026-04-27 16:28:05,276 - INFO - Random Forest MAE: 0.17734392960553752
+2026-04-27 16:28:05,276 - INFO - Random Forest RMSE: 1.4132201585706916
+2026-04-27 16:28:05,277 - INFO - Random Forest R2: 0.846120810122156
+2026-04-27 16:28:22,574 - INFO - Pipeline completed successfully.
