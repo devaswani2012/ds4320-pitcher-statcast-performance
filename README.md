@@ -178,7 +178,6 @@ The main MongoDB modeling collection is `pitcher_season_model_data`. Each docume
 
 A typical document follows this structure:
 
-```json
 {
   "pitcher_id": 572971,
   "pitcher_name": "Keuchel, Dallas",
@@ -188,7 +187,7 @@ A typical document follows this structure:
   "plate_appearances": 874,
   "fastball_velocity": 89.7,
   "fastball_spin": 2166.0
-}```
+}
 
 The soft schema allows MongoDB to store the pitcher-season records as flexible documents while maintaining a consistent structure for analysis. Integer fields include identifiers, seasons, and plate appearance counts. Float fields include xERA, average estimated wOBA, fastball velocity, and fastball spin. String fields are used for pitcher names. Missing or invalid values in critical modeling fields are handled during data preparation before documents are inserted into the final modeling collection.
 The project also stores raw supporting collections in MongoDB. These collections preserve the original expected-statistics, pitch-arsenal speed, and pitch-arsenal spin data before they are merged into the final modeling collection.
