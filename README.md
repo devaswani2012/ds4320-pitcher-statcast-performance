@@ -109,36 +109,34 @@ By combining large-scale pitch-level data with statistical modeling, this domain
 
 ### Data Acquisition
 
-This project uses MLB Statcast-derived pitcher data from the 2018 through 2021 seasons. The raw data sources include pitcher expected statistics, pitcher pitch-arsenal speed, and pitcher pitch-arsenal spin. These sources are merged by pitcher and season to create a final pitcher-season modeling dataset.
+This project uses MLB Statcast pitcher data from the 2018 through 2021 seasons. The data was collected in Python using the `pybaseball` package, specifically the `statcast_pitcher_expected_stats` function for expected pitcher performance metrics and the `statcast_pitcher_pitch_arsenal` function for pitch-arsenal velocity and spin information. Instead of storing each individual pitch as the final modeling unit, the main dataset is organized at the pitcher-season level. Each document in the main modeling collection represents one pitcher in one MLB season.
 
-Each observation in the final modeling dataset represents one pitcher in one MLB season. Therefore, each MongoDB document in the final modeling collection corresponds to a single pitcher-season observation rather than a single pitch. The final documents include pitcher identification, season, xERA, average estimated wOBA allowed, plate appearances, fastball velocity, and fastball spin rate.
-
-After the raw data is loaded, the preparation process standardizes the relevant columns, merges the expected-statistics, velocity, and spin datasets, removes rows with missing values in critical modeling fields, and inserts the cleaned pitcher-season records into MongoDB.
+The raw data acquisition process began by pulling three types of Statcast information for each season: expected pitcher statistics, average pitch speed data, and average pitch spin data. These raw tables were kept as separate MongoDB collections to preserve the original source structure. A cleaned modeling dataset was then created by selecting the relevant fields, renaming columns into a consistent format, merging the expected-statistics table with fastball velocity and fastball spin data, converting numeric columns into appropriate numeric types, removing rows with missing values in critical modeling fields, and dropping duplicate pitcher-season observations. The final modeling collection, `pitcher_season_model_data`, contains 2,967 pitcher-season documents.
 
 ### Data Processing Pipeline
 
-The data pipeline transforms Statcast-derived pitcher data into a MongoDB document database and then into a modeling dataset. The main steps are:
+The data pipeline transforms raw Statcast pitcher data into a document database and then into a modeling dataset. The main steps are:
 
-1. **Raw Data Collection**  
-   Pitcher expected-statistics, pitch-arsenal speed, and pitch-arsenal spin datasets are collected for the 2018 through 2021 MLB seasons.
+1. **Data Collection**  
+   Statcast expected pitcher statistics, pitch-arsenal average speed data, and pitch-arsenal average spin data are collected for each season from 2018 through 2021.
 
 2. **Feature Selection**  
-   The project keeps pitcher-season variables needed for modeling, including pitcher ID, pitcher name, season, xERA, average estimated wOBA allowed, plate appearances, fastball velocity, and fastball spin rate.
+   The expected-statistics data is reduced to pitcher identifiers, pitcher names, season, xERA, average estimated wOBA, and plate appearances. The pitch-arsenal tables are reduced to pitcher identifiers, average fastball velocity, and average fastball spin.
 
 3. **Cleaning**  
-   Rows with missing values in critical fields are removed. Column names are standardized so that MongoDB documents follow a consistent soft schema.
+   Columns are renamed into a consistent schema. Numeric fields are converted into numeric data types using coercion to handle invalid values. Rows missing critical fields such as `xERA`, `fastball_velocity`, or `fastball_spin` are removed.
 
 4. **Merging**  
-   The expected-statistics, velocity, and spin datasets are merged by pitcher and season to create a complete pitcher-season modeling table.
+   The expected-statistics data, velocity data, and spin data are merged by `pitcher_id`. This creates one modeling record per pitcher-season.
 
 5. **Document Creation**  
-   Each cleaned pitcher-season row is converted into a dictionary, allowing it to be inserted into MongoDB as an individual document.
+   Each cleaned pitcher-season row is converted into a Python dictionary so it can be inserted into MongoDB as a document.
 
 6. **MongoDB Storage**  
-   The cleaned pitcher-season records are stored in the `pitcher_season_model_data` MongoDB collection. This satisfies the document-model requirement and allows flexible querying.
+   The cleaned pitcher-season modeling documents are stored in the `pitcher_season_model_data` collection. The raw supporting tables are also stored in MongoDB as separate collections so the source data remains available for inspection.
 
 7. **Modeling Table Construction**  
-   The analysis pipeline queries MongoDB into a pandas dataframe and uses the pitcher-season documents as the modeling dataset for machine learning.
+   The analysis pipeline queries the `pitcher_season_model_data` collection from MongoDB, converts the documents into a pandas dataframe, and uses the resulting dataframe for machine learning analysis and visualization.
 
 ### Code Table
 
@@ -150,23 +148,25 @@ The data pipeline transforms Statcast-derived pitcher data into a MongoDB docume
 
 ### Rationale for Critical Decisions
 
-Pitcher-season data was chosen because the project’s target variable, xERA, is measured at the season level for each pitcher. Using pitcher-season documents keeps the unit of analysis consistent between the predictors and the outcome while still producing a dataset with well over 1,000 MongoDB documents. This also makes the project a natural fit for MongoDB because each document can store a complete pitcher-season record with identifying information, expected-performance metrics, workload, and fastball characteristics.
+The main unit of observation was set at the pitcher-season level because the project’s specific problem is to predict season-level xERA. Since xERA is a season-level pitcher performance metric, a pitcher-season document is the most appropriate modeling unit. This avoids incorrectly treating individual pitches as independent observations for a season-level outcome.
 
-MongoDB was selected because the document model is well-suited for semi-structured sports tracking data. The document model is useful because the project combines multiple Statcast-derived sources, including expected statistics, pitch-arsenal velocity, and pitch-arsenal spin, into one flexible pitcher-season record. A document database can preserve this structure more naturally than a rigid table.
+MongoDB was selected because the project still uses a document model to store both the cleaned modeling dataset and the raw supporting Statcast tables. The document structure makes it possible to preserve multiple related data sources while also producing a clean modeling collection for analysis. Storing the raw expected-statistics, velocity, and spin data in separate collections also helps with transparency because the modeling data can be traced back to its source tables.
 
-xERA was selected as the primary outcome because it better reflects pitcher skill than traditional ERA. ERA is affected by defense, sequencing, and randomness, while xERA attempts to measure expected run prevention based on strikeouts, walks, and quality of contact. This makes it a stronger target variable for a predictive model based on pitch-quality features.
+Fastball velocity and fastball spin were selected because they are core Statcast pitch-quality metrics that describe the physical characteristics of a pitcher’s arsenal. Average estimated wOBA was included because it captures the expected quality of contact and plate-appearance outcomes allowed by the pitcher. Plate appearances were included as a volume measure because pitcher-season estimates are generally more reliable when they are based on larger samples.
+
+Several judgment calls may introduce uncertainty. First, the project focuses on fastball velocity and fastball spin rather than every pitch type, which simplifies the model but may leave out important information about pitchers who rely heavily on breaking balls or off-speed pitches. Second, rows missing xERA, fastball velocity, or fastball spin are removed, which improves data consistency but may exclude pitchers with incomplete Statcast records. Third, average estimated wOBA is closely related to xERA, so the model’s predictive strength should be interpreted carefully because some predictor information overlaps conceptually with the target variable.
 
 ### Bias Identification
 
-Several sources of bias may be present in the data creation process. Selection bias can occur if the dataset includes only qualified pitchers, because injured players, relievers, and lower-volume pitchers may be excluded. Survivorship bias may also occur because pitchers who remain qualified across a season are more likely to be successful or healthy.
+Several forms of bias could be introduced during data collection and preparation. Selection bias may occur because the dataset only includes pitchers who appear in Statcast pitcher tables and have the required expected-statistics, velocity, and spin information. Pitchers with very limited playing time, incomplete tracking data, or missing fastball information may be excluded. This means the final modeling dataset may overrepresent pitchers with larger workloads or more complete Statcast records.
 
-Measurement bias may exist because Statcast data relies on tracking technology that can produce small errors in variables such as velocity, spin rate, launch speed, and launch angle. Contextual bias may also arise because pitch outcomes depend on opposing hitters, defensive support, ballpark conditions, weather, and game situation, which are not fully captured by the selected features.
+Survivorship bias may also be present because pitchers who accumulate enough plate appearances to appear in the data are more likely to be healthy, active, and trusted by MLB teams. Measurement bias is also possible because Statcast variables such as velocity, spin rate, and expected outcome metrics are generated by tracking systems and modeling assumptions. Finally, omitted-variable bias may occur because the model does not fully account for defense, ballpark effects, opposing hitter quality, pitch location, pitch mix, injuries, or game situation.
 
 ### Bias Mitigation
 
-This project reduces bias by using multiple seasons of data from 2018 through 2021 rather than relying on a single year. The use of xERA also helps reduce the influence of defense and random variation because expected metrics focus more on the quality of the event than on the final result of the play.
+This project reduces bias by using four seasons of data rather than relying on one season. Using multiple years helps reduce the influence of unusual single-season conditions and creates a larger sample of pitcher-seasons. The project also keeps the data creation process transparent by documenting which Statcast sources were used, which fields were retained, and which collections were uploaded to MongoDB.
 
-The analysis uses pitcher-season summaries and plate appearances to reduce the influence of random single-event outcomes and to make the modeling unit consistent with the season-level xERA target. Exploratory analysis is used to identify missing values, outliers, and unusual observations. Filtering decisions are documented so that limitations are transparent and the results can be interpreted appropriately.
+Bias is also addressed by using xERA instead of traditional ERA as the target variable. xERA is better suited for pitcher evaluation because it focuses more on expected outcomes and quality of contact rather than only on final runs allowed, which can be affected by defense and luck. However, the project still acknowledges that xERA is not a perfect measure of pitcher skill. The final interpretation of the model should therefore treat the results as evidence of predictive signal in Statcast metrics, not as a complete explanation of pitcher performance.
 
 ---
 
@@ -174,45 +174,57 @@ The analysis uses pitcher-season summaries and plate appearances to reduce the i
 
 ### Soft-Schema Guidelines
 
-The primary MongoDB collection used for the analysis is `pitcher_season_model_data`. Each document represents one pitcher-season observation from the 2018 through 2021 MLB seasons. This means the unit of observation is not a single pitch, but a summarized season-level record for a specific pitcher in a specific year.
+The main MongoDB modeling collection is `pitcher_season_model_data`. Each document in this collection represents one pitcher-season observation. The document schema is intentionally simple and consistent because the collection is designed for machine learning analysis. Each document contains pitcher identification fields, a season field, the target variable, and several numeric predictor variables.
 
-Documents follow a consistent soft schema with fields for pitcher identification, season, expected run-prevention performance, expected contact quality, workload, and fastball characteristics. Core identifying fields include `pitcher_id`, `pitcher_name`, and `season`. The target variable is `xERA`, while the main predictive features are `avg_estimated_woba`, `plate_appearances`, `fastball_velocity`, and `fastball_spin`.
+A typical document follows this structure:
 
-Numerical variables are stored as integers or floats, while pitcher names are stored as strings. During data preparation, raw Statcast expected-stat and pitch-arsenal data are cleaned, merged by pitcher and season, converted into dictionaries, and uploaded to MongoDB as documents. Missing values in critical modeling fields are removed before analysis so that the final modeling collection is consistent and ready for querying.
+```json
+{
+  "pitcher_id": 572971,
+  "pitcher_name": "Keuchel, Dallas",
+  "season": 2018,
+  "xERA": 3.60,
+  "avg_estimated_woba": 0.293,
+  "plate_appearances": 874,
+  "fastball_velocity": 89.7,
+  "fastball_spin": 2166.0
+}
 
+The soft schema allows MongoDB to store the pitcher-season records as flexible documents while maintaining a consistent structure for analysis. Integer fields include identifiers, seasons, and plate appearance counts. Float fields include xERA, average estimated wOBA, fastball velocity, and fastball spin. String fields are used for pitcher names. Missing or invalid values in critical modeling fields are handled during data preparation before documents are inserted into the final modeling collection.
+The project also stores raw supporting collections in MongoDB. These collections preserve the original expected-statistics, pitch-arsenal speed, and pitch-arsenal spin data before they are merged into the final modeling collection.
 ### Data Summary
 
 | Collection | Description | Unit of Observation | Document Count |
 |---|---|---:|---:|
-| `pitcher_season_model_data` | Final merged modeling dataset containing season-level pitcher Statcast features from 2018–2021 | One document per pitcher-season | 2,967 |
-| `pitcher_expected_stats_raw` | Raw Statcast expected pitcher statistics by season | One document per pitcher-season expected-stat record | 3,274 |
-| `pitcher_pitch_arsenal_speed_raw` | Raw Statcast pitch arsenal speed data by season | One document per pitcher-season pitch-arsenal speed record | 3,166 |
-| `pitcher_pitch_arsenal_spin_raw` | Raw Statcast pitch arsenal spin data by season | One document per pitcher-season pitch-arsenal spin record | 3,166 |
-
-The primary analysis uses the `pitcher_season_model_data` collection, which contains 2,967 pitcher-season observations across 1,271 unique pitchers and the 2018, 2019, 2020, and 2021 MLB seasons.
+| `pitcher_season_model_data` | Cleaned modeling dataset used in the analysis pipeline | One pitcher-season | 2,967 |
+| `pitcher_expected_stats_raw` | Raw Statcast expected pitcher statistics by season | One pitcher-season expected-stat row | 3,274 |
+| `pitcher_pitch_arsenal_speed_raw` | Raw Statcast pitch-arsenal average speed data | One pitcher-season arsenal-speed row | 3,166 |
+| `pitcher_pitch_arsenal_spin_raw` | Raw Statcast pitch-arsenal average spin data | One pitcher-season arsenal-spin row | 3,166 |
+| **Total** | All MongoDB documents uploaded across project collections | Mixed supporting and modeling documents | **12,573** |
 
 ### Data Dictionary
 
 | Feature | Type | Description | Example |
 |---|---|---|---|
-| `pitcher_id` | Integer | Unique MLB identifier for each pitcher | `572971` |
-| `pitcher_name` | String | Pitcher's name in last-name, first-name format | `Keuchel, Dallas` |
-| `season` | Integer | MLB season for the pitcher-season observation | `2018` |
-| `xERA` | Float | Expected earned run average; the prediction target measuring expected run prevention | `3.60` |
-| `avg_estimated_woba` | Float | Average estimated weighted on-base average allowed, based on quality of contact and expected outcomes | `0.293` |
-| `plate_appearances` | Integer | Number of plate appearances included for that pitcher-season | `874` |
-| `fastball_velocity` | Float | Average fastball velocity in miles per hour | `89.7` |
-| `fastball_spin` | Float | Average fastball spin rate in revolutions per minute | `2166.0` |
+| `_id` | ObjectId | MongoDB-generated unique document identifier. This is removed before modeling because it has no predictive meaning. | `69ebc1c26aeae905745c854e` |
+| `pitcher_id` | Integer | Unique MLB identifier for the pitcher. Used to merge Statcast tables and distinguish pitchers with similar names. | `572971` |
+| `pitcher_name` | String | Pitcher name as listed in the Statcast data. | `Keuchel, Dallas` |
+| `season` | Integer | MLB season for the observation. | `2018` |
+| `xERA` | Float | Expected earned run average. This is the target variable the model attempts to predict. | `3.60` |
+| `avg_estimated_woba` | Float | Average estimated weighted on-base average allowed by the pitcher. Lower values generally indicate better expected pitcher outcomes. | `0.293` |
+| `plate_appearances` | Integer | Number of plate appearances represented in the pitcher-season expected-statistics record. | `874` |
+| `fastball_velocity` | Float | Average fastball velocity for the pitcher-season, measured in miles per hour. | `89.7` |
+| `fastball_spin` | Float | Average fastball spin rate for the pitcher-season, measured in revolutions per minute. | `2166.0` |
 
 ### Quantification of Uncertainty
 
 | Feature | Mean | Std. Dev. | Min | Max | Interpretation |
 |---|---:|---:|---:|---:|---|
-| `xERA` | 5.49 | 6.22 | 0.00 | 190.84 | xERA has a wide range because some pitcher-season observations contain extreme expected run-prevention values. These outliers should be interpreted carefully. |
-| `fastball_velocity` | 92.98 | 2.95 | 64.00 | 101.00 | Most pitchers cluster around the low-to-mid 90s, but the minimum suggests some unusual or low-volume pitcher-season observations. |
-| `fastball_spin` | 2255.47 | 162.00 | 1448.00 | 2891.00 | Spin rate varies meaningfully across pitchers and reflects differences in pitch movement and pitch quality. |
-| `avg_estimated_woba` | Calculated in pipeline | Calculated in pipeline | Calculated in pipeline | Calculated in pipeline | This variable is conceptually related to xERA because both are expected-performance metrics, so it may introduce overlap between predictors and the target. |
-| `plate_appearances` | Calculated in pipeline | Calculated in pipeline | Calculated in pipeline | Calculated in pipeline | Plate appearances measure workload and sample size. Low-volume pitchers may produce noisier season-level observations. |
+| `xERA` | 5.49 | 6.22 | 0.00 | 190.84 | The high maximum suggests extreme outliers may exist, likely from very small samples or unusual Statcast records. This creates uncertainty in model evaluation. |
+| `fastball_velocity` | 92.98 | 2.95 | 64.00 | 101.00 | Most pitcher-seasons cluster near MLB fastball norms, but the minimum suggests possible low-volume pitchers, classification issues, or unusual observations. |
+| `fastball_spin` | 2255.47 | 162.00 | 1448.00 | 2891.00 | Spin rate varies meaningfully across pitchers, but extreme low or high values may reflect pitch classification differences or small-sample uncertainty. |
+| `avg_estimated_woba` | Not displayed in summary output | Not displayed in summary output | Not displayed in summary output | Not displayed in summary output | This variable is conceptually close to xERA because both relate to expected pitcher outcomes. Its use improves prediction but introduces interpretive uncertainty because it may overlap with the target variable. |
+| `plate_appearances` | Not displayed in summary output | Not displayed in summary output | Not displayed in summary output | Not displayed in summary output | Plate appearances measure sample size. Pitcher-seasons with fewer plate appearances may produce less stable xERA and estimated wOBA values. |
 
 Pitcher-season outcomes contain uncertainty because xERA, estimated wOBA, velocity, and spin rate are all summaries of many individual baseball events. Some uncertainty comes from measurement error in Statcast tracking technology, while additional uncertainty comes from differences in opponent quality, ballpark conditions, pitch mix, injuries, role changes, and sample size. The model reduces single-event randomness by using season-level summaries, but the results should still be interpreted as predictive rather than causal.
 
