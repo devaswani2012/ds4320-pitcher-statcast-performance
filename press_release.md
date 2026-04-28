@@ -12,9 +12,9 @@ This project focuses on a more specific question: how well can pitcher-season St
 
 ## Solution Description
 
-The solution uses pitch-level Statcast data to build a MongoDB document database where each document represents a single pitch. These documents include pitch characteristics such as velocity, spin rate, pitch type, count, and contact-quality variables.
+The solution uses Statcast-derived pitcher-season data to build a MongoDB document database where each modeling document represents one pitcher in one MLB season. These documents include pitcher identifiers, season, xERA, average estimated wOBA allowed, plate appearances, fastball velocity, and fastball spin rate.
 
-The analysis pipeline queries the MongoDB collection into Python, converts the documents into a dataframe, aggregates pitch-level records into pitcher-season features, and trains a machine learning model to predict xERA. Because xERA is designed to reflect expected performance rather than only actual outcomes, it provides a better target for evaluating pitcher skill.
+The analysis pipeline queries the MongoDB collection into Python, converts the documents into a dataframe, and trains a machine learning model to predict season-level xERA. Because xERA is designed to reflect expected performance rather than only actual outcomes, it provides a better target for evaluating pitcher skill.
 
 ## Chart
 
